@@ -8,11 +8,13 @@ import 'package:path/path.dart';
 /// 也就是只生成根目錄的檔案
 void generatedWithSingleFile({
   required AssetStruct struct,
+  required String classNamePrefix,
   required Directory outputDir,
   required String instanceName,
   required String partFileName,
 }) {
   final code = struct.toDartCode(
+    classNamePrefix: classNamePrefix,
     fieldStatic: false,
     generateInstance: false,
   );

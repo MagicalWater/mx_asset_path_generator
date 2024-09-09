@@ -1,6 +1,6 @@
 name: mx_asset_path_generator
 description: 生成資源路徑
-version: 1.0.0
+version: 1.0.1
 repository: https://github.com/MagicalWater/mx_asset_path_generator
 
 environment:

@@ -20,6 +20,8 @@
     -p, --part                 part文件名稱, 輸出的路徑dart class將會以私有類的型態放置在這, 由output目錄中的文件進行part引入
                                (defaults to "r_part.dart")
     --package                  套件名稱, 當有值時會將路徑聲明為特定套件內的資源路徑, 例如(packages/{套件名稱}/assets/images/a.png)
+    --class_name_prefix        生成的class名稱前綴, 例如: class_name_prefix=D, 則生成的class名稱為D{路徑名稱}
+                               (defaults to "D")
     -s, --[no-]print_struct    打印全部的資料夾結構
     -h, --[no-]help            說明
 	```

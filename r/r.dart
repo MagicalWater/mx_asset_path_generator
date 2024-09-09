@@ -2,4 +2,4 @@
 
 part 'r_part.dart';
 
-const r_aa = _Assets._();
+const r = DAssets._();

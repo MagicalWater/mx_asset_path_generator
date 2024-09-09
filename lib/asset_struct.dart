@@ -25,6 +25,9 @@ class AssetStruct {
   /// 無值時 (assets/images/a.png)
   final String? packageName;
 
+  /// 是否有packageName
+  bool get hasPackageName => packageName != null && packageName!.isNotEmpty;
+
   /// 類別名稱, 當呼叫過toDartCode後才會有值
   String? classname;
 
@@ -96,13 +99,13 @@ class AssetStruct {
   }
 
   /// to dart code
-  /// [classNamePrev] 類別名稱的前綴
+  /// [classNamePrefix] 類別名稱的前綴
   /// [fieldStatic] 所有欄位是否為static
   /// [classNamePath] 類別名稱的路徑
   /// [generateInstance] 是否產生實體
   /// [instanceName] 實體名稱
   String toDartCode({
-    String classNamePrev = '',
+    String classNamePrefix = '',
     bool fieldStatic = false,
     List<String> classNamePath = const [],
     bool generateInstance = false,
@@ -111,7 +114,7 @@ class AssetStruct {
     // 第一層結構才會有前綴文字, 並且field需要是static
 
     final classCode = _toSelfDartCode(
-      classNamePrev: classNamePrev,
+      classNamePrefix: classNamePrefix,
       fieldStatic: fieldStatic,
       classNamePath: [...classNamePath, name],
       generateInstance: generateInstance,
@@ -120,7 +123,7 @@ class AssetStruct {
 
     final structCode = structs.map((e) {
       return e.toDartCode(
-        classNamePrev: '',
+        classNamePrefix: classNamePrefix,
         fieldStatic: false,
         classNamePath: [...classNamePath, name],
         generateInstance: false,
@@ -132,13 +135,13 @@ class AssetStruct {
   }
 
   /// 產生只有自己class的dart code
-  /// [classNamePrev] 類別名稱的前綴
+  /// [classNamePrefix] 類別名稱的前綴
   /// [fieldStatic] 所有欄位是否為static
   /// [classNamePath] 類別名稱的路徑
   /// [generateInstance] 是否產生實體
   /// [instanceName] 實體名稱
   String _toSelfDartCode({
-    String classNamePrev = '',
+    String classNamePrefix = '',
     bool fieldStatic = false,
     List<String> classNamePath = const [],
     bool generateInstance = false,
@@ -147,28 +150,35 @@ class AssetStruct {
     final namePathJoin = classNamePath.join('/');
     // 大駝峰命名
     var className = namePathJoin.upperCamelCase;
-    // print('-: $name => $path => $className => $classNamePrev');
 
     // 加上前綴
-    final classNameWithPrev = '_$classNamePrev$className';
+    final classNameWithPrefix = '$classNamePrefix$className';
 
-    classname = classNameWithPrev;
+    classname = classNameWithPrefix;
 
     String insCode = '';
     if (generateInstance) {
       if (instanceName?.isEmpty ?? true) {
-        insCode = 'const r$className = $classNameWithPrev._();\n';
+        insCode = 'const r$className = $classNameWithPrefix._();\n';
       } else {
-        insCode = 'const $instanceName = $classNameWithPrev._();\n';
+        insCode = 'const $instanceName = $classNameWithPrefix._();\n';
       }
     }
 
-    String filesCode = '';
+    // 第一個路徑代碼
+    String pathCode = path;
+    if (hasPackageName) {
+      pathCode = 'packages/$packageName/$pathCode';
+    }
+
+    // 檔案的代碼, 先加入必定會有的path
+    String filesCode = 'final path = \'$pathCode\';\n';
+
     for (var element in files) {
       // 名稱轉成小駝峰, 去除副檔名
       final elementName = basenameWithoutExtension(element).upperCamelCase;
       var elementPath = join(path, element);
-      if (packageName != null && packageName!.isNotEmpty) {
+      if (hasPackageName) {
         elementPath = 'packages/$packageName/$elementPath';
       }
       final code = 'f$elementName = \'$elementPath\';\n';
@@ -183,7 +193,7 @@ class AssetStruct {
     for (var element in structs) {
       final elementName = element.name.upperCamelCase;
       var elementClassName = '$namePathJoin/${element.name}'.upperCamelCase;
-      elementClassName = '_$elementClassName';
+      elementClassName = '$classNamePrefix$elementClassName';
       if (fieldStatic) {
         final code = 'd$elementName = $elementClassName._();\n';
         structCode += 'static const $code';
@@ -196,11 +206,11 @@ class AssetStruct {
     final classPattern = '''
 $insCode
 
-class $classNameWithPrev {
+class $classNameWithPrefix {
   $filesCode
   $structCode
   
-  const $classNameWithPrev._();
+  const $classNameWithPrefix._();
 }
     ''';
 

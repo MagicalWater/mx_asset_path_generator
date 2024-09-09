@@ -18,6 +18,7 @@ void main(List<String> arguments) {
   final dirPath = results['directory'];
   final outputDirPath = results['output'];
   final partFileName = results['part'];
+  final classNamePrefix = results['class_name_prefix'];
 
   final inputDirectory = Directory(dirPath);
 
@@ -35,6 +36,7 @@ void main(List<String> arguments) {
   // 輸出
   generatedWithSingleFile(
     struct: struct,
+    classNamePrefix: classNamePrefix,
     outputDir: Directory(outputDirPath),
     instanceName: 'r',
     partFileName: partFileName,
@@ -56,7 +58,8 @@ ArgParser _initArgParser() {
     ..addOption(
       'output',
       abbr: 'o',
-      help: '輸出的資料夾路徑, 檔案名稱將會與資料夾名稱相同, 以預設為例子則會生成r/r.dart, 此檔案交由使用者自行修改引入的instance, 所以重新生成將不會覆蓋',
+      help:
+          '輸出的資料夾路徑, 檔案名稱將會與資料夾名稱相同, 以預設為例子則會生成r/r.dart, 此檔案交由使用者自行修改引入的instance, 所以重新生成將不會覆蓋',
       defaultsTo: 'lib/r/',
     )
     ..addOption(
@@ -69,6 +72,11 @@ ArgParser _initArgParser() {
       'package',
       help:
           '套件名稱, 當有值時會將路徑聲明為特定套件內的資源路徑, 例如(packages/{套件名稱}/assets/images/a.png)',
+    )
+    ..addOption(
+      'class_name_prefix',
+      help: '生成的class名稱前綴, 例如: class_name_prefix=D, 則生成的class名稱為D{路徑名稱}',
+      defaultsTo: 'D',
     )
     ..addFlag('print_struct', abbr: 's', help: '打印全部的資料夾結構', defaultsTo: false)
     ..addFlag('help', abbr: 'h', help: '說明');

@@ -19,8 +19,9 @@ void main() {
     // 進行書出
     generatedWithSingleFile(
       struct: struct,
+      classNamePrefix: 'D',
       outputDir: outputDir,
-      instanceName: 'r_aa',
+      instanceName: 'r',
       partFileName: 'r_part.dart',
     );
 
