@@ -174,7 +174,16 @@ class AssetStruct {
     // 檔案的代碼, 先加入必定會有的path
     String filesCode = 'final path = \'$pathCode\';\n';
 
-    for (var element in files) {
+    // files依照名稱排序
+    // 但不更改到原本的files
+    final sortFiles = List<String>.from(files);
+    sortFiles.sort((a, b) {
+      final aName = basenameWithoutExtension(a).upperCamelCase;
+      final bName = basenameWithoutExtension(b).upperCamelCase;
+      return aName.compareTo(bName);
+    });
+
+    for (var element in sortFiles) {
       // 名稱轉成小駝峰, 去除副檔名
       final elementName = basenameWithoutExtension(element).upperCamelCase;
       var elementPath = join(path, element);
@@ -189,8 +198,17 @@ class AssetStruct {
       }
     }
 
+    // structs依照名稱排序
+    // 但不更改到原本的structs
+    final sortStructs = List<AssetStruct>.from(structs);
+    sortStructs.sort((a, b) {
+      final aName = a.name.upperCamelCase;
+      final bName = b.name.upperCamelCase;
+      return aName.compareTo(bName);
+    });
+
     String structCode = '';
-    for (var element in structs) {
+    for (var element in sortStructs) {
       final elementName = element.name.upperCamelCase;
       var elementClassName = '$namePathJoin/${element.name}'.upperCamelCase;
       elementClassName = '$classNamePrefix$elementClassName';
@@ -216,26 +234,6 @@ class $classNameWithPrefix {
 
     return classPattern;
   }
-}
-
-kk() {
-  // Assets.dImages.dLight.fBgChangelogNewL.upperCamelCase
-}
-
-final BB = AA.bb;
-
-class AA {
-  static final aa = '';
-  static final bb = _BB();
-}
-
-class _BB {
-  final bb = '';
-  final cc = _CC();
-}
-
-class _CC {
-  final cc = '';
 }
 
 extension NameCamelCase on String {

@@ -4,8 +4,8 @@ class DAssets {
   final path = 'packages/test_package/assets';
   final fFile1 = 'packages/test_package/assets/file1';
 
-  final dDir2 = const DAssetsDir2._();
   final dDir1 = const DAssetsDir1._();
+  final dDir2 = const DAssetsDir2._();
 
   const DAssets._();
 }

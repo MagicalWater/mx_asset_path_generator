@@ -45,7 +45,7 @@ void generatedWithSingleFile({
   partFile.writeAsStringSync(formattedCode);
 
   if (!outputFile.existsSync()) {
-    // 若export檔案不存在則自動生成
+    // 若part檔案不存在則自動生成
     final content = '''
 // 此檔案自動生成, 生成path class不會覆蓋檔案, 可在此創建調用asset的實體
 
